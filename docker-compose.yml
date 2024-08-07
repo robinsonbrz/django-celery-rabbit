@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+
+  rabbitmq:
+    container_name: backend-geloextra-rabbitmq
+    image: rabbitmq:3-management
+    restart: on-failure
+    ports:
+      - "5672:5672"
+      - "15672:15672"      
+    hostname: rabbit
+    networks:
+      geloextra-network:
+        ipv4_address: 172.20.0.3
+
+  backend:
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    ports:
+      - 8000:8000
+    networks:
+      geloextra-network:
+        ipv4_address: 172.20.0.4
+
+
+
+networks:
+  geloextra-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
